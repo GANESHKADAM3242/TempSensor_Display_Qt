@@ -1,0 +1,21 @@
+# Build folders
+build/
+cmake-build-*/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+*.cmake
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.out
+
+# Qt
+*.pro.user
+*.qmake.stash
+
+# Logs
+*.log

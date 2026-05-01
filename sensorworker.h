@@ -26,9 +26,9 @@ signals:
         void finished();
 
 private:
-        SensorData *m_data;
-        QMutex *m_mutex;
-        bool m_running = false;
+        SensorData *writeData = nullptr;
+        QMutex *sensorMutex   = nullptr;
+        bool SensorRunning    = false;
 };
 
 #endif // SENSORWORKER_H

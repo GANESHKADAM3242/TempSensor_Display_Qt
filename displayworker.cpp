@@ -1,36 +1,39 @@
 #include "displayworker.h"
 #include "sensorworker.h"
 #include <QThread>
+#include <qdebug.h>
 
 
 
 DisplayWorker::DisplayWorker(SensorData *data, QMutex *mutex, QObject *parent)
-: QObject(parent), m_data(data), m_mutex(mutex)
+: QObject(parent)
 {
-
+    readData     = data;
+    displayMutex = mutex;
+    qDebug() << "[DisplayWorker] constructed. data:" << data << "mutex:" << mutex;
 }
 
 void DisplayWorker::startDisplay()
 {
-    m_running = true;
-    while(m_running)
+    displayRunning = true;
+    while(displayRunning)
     {
         double temp,hum;
         int count;
         {
-            QMutexLocker locker(m_mutex);
-            temp = m_data->temperature;
-            hum = m_data->humidity;
-            count = m_data->readCount;
+            QMutexLocker locker(displayMutex);
+            temp  = readData->temperature;
+            hum   = readData->humidity;
+            count = readData->readCount;
         }
         emit newReading(temp, hum, count);
-
+        QThread::msleep(1000);
     }
 
 }
 
 void DisplayWorker::stop()
 {
-    m_running = false;
+    displayRunning = false;
 }
 

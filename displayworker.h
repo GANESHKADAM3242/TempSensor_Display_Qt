@@ -21,9 +21,9 @@ signals:
     void finished();
 
 private:
-    SensorData *m_data;
-    QMutex *m_mutex;
-    bool m_running = false;
+    SensorData *readData;
+    QMutex *displayMutex;
+    bool displayRunning = false;
 
 };
 

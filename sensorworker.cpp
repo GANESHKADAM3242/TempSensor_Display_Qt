@@ -5,25 +5,33 @@
 
 SensorWorker::SensorWorker(SensorData *data, QMutex *mutex, QObject *parent)
     : QObject{parent}
-{}
+{
+    writeData   = data;
+    sensorMutex = mutex;
+    qDebug() << "[SensorWorker] constructed. data:" << data << "mutex:" << mutex;
+}
 
 void SensorWorker::startReading()
 {
-    m_running = true;
+    qDebug() << "[SensorWorker] startReading() on thread:" << QThread::currentThread();
+    SensorRunning = true;
 
-    while(m_running)
+    while(SensorRunning)
     {
-        QMutexLocker locker(m_mutex); // mutex lock here.
-        m_data->temperature = 20.0 + QRandomGenerator::global()->bounded(15);
-        m_data->humidity    = 40.0 + QRandomGenerator::global()->bounded(15);
-        m_data->readCount = m_data->readCount + 1;
+        {
+            QMutexLocker locker(sensorMutex); // mutex lock here.
+            writeData->temperature = 20.0 + QRandomGenerator::global()->bounded(15);
+            writeData->humidity    = 40.0 + QRandomGenerator::global()->bounded(15);
+            writeData->readCount = writeData->readCount + 1;
+        }
+        QThread::msleep(500);
     }
-    QThread::msleep(500);
+
     emit finished();
 
 }
 
 void SensorWorker::stop()
 {
-    m_running = false;
+    SensorRunning = false;
 }
